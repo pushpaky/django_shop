@@ -1,18 +1,17 @@
 from django.shortcuts import render, redirect
 
 from item.models import Category, Item
+
 from .forms import SignupForm
 
 
-# Create your views here.
 def index(request):
+    items = Item.objects.filter(is_sold=False)[0:6]
     categories = Category.objects.all()
-    for category in categories:
-        category.item_count = category.items.count()
-    items = Item.objects.filter(is_sold=False)[0:20]
+
     return render(request, 'shop_app/index.html', {
-        "categories": categories,
-        "items": items,
+        'categories': categories,
+        'items': items,
     })
 
 
@@ -26,9 +25,11 @@ def signup(request):
 
         if form.is_valid():
             form.save()
+
             return redirect('/login/')
     else:
         form = SignupForm()
+
     return render(request, 'shop_app/signup.html', {
-        'form': form,
+        'form': form
     })
